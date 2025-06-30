@@ -14,7 +14,7 @@ const ToDoList = () => {
     const hasSetupRun = useRef(false); //prevents setup from running twice from StrictMode
 
 
-    async function accessAPIServer(action, taskID = null, newValue = null, userName = "tester") {
+    async function accessAPIServer(action, taskID = null, newValue = null, userName = "Connor") {
         let actions = ['CreateUser', 'ReadUser', 'CreateTask', 'DeleteTask', 'UpdateTask'];
         let heading = { 'Content-Type': 'application/json' };
         //double checks if the function is being used correctly

@@ -81,9 +81,21 @@ const ToDoList = () => {
             return userData.todos
         } catch (error) {
             console.error(error.message);
-            return [];
+            return null;
         }
 
+    }
+
+    async function deleteAll(){
+        let check = await getTasksFromAPI();
+        if(check.length !== 0){
+            for(let task of tasks){
+                await deleteItem(task.id);
+            }
+            
+            
+        }
+        
     }
 
     useEffect(() => {
@@ -122,7 +134,8 @@ const ToDoList = () => {
     }
 
 
-    let mappedToDoList = 
+    let mappedToDoList = (tasks.length === 0) ?
+        [<li className="list-group-item fs-3 d-flex justify-content-between" key={0}>There's nothing to do... </li>] :
         tasks.map((object, index) => {
             let classes = (object.is_done) ? "list-group-item fs-3 d-flex justify-content-between bg-success" : "list-group-item fs-3 d-flex justify-content-between";
             return <li className={classes}
@@ -146,6 +159,11 @@ const ToDoList = () => {
                         {mappedToDoList}
                         <li className="list-group-item">{tasks.length} {(tasks.length === 1) ? "item" : "items"} left</li>
                     </ul>
+                </div>
+            </div>
+            <div className="row d-flex justify-content-center">
+                <div className="col-3">
+                    <button type="button" className="btn btn-danger mt-3" onClick={deleteAll}>Delete All Tasks</button>
                 </div>
             </div>
         </div>

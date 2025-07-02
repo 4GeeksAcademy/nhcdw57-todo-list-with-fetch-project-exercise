@@ -25,12 +25,12 @@ const ToDoList = () => {
             return fetch(`https://playground.4geeks.com/todo/users/${userName}`, { method: 'POST' });
         } else if (check === 1) { //Read User
             return fetch(`https://playground.4geeks.com/todo/users/${userName}`);
-        } else if (check === 2 && newValue != null) { //Create Task
+        } else if (check === 2 && taskID === null && newValue !== null) { //Create Task
             let taskBody = { "label": newValue, "is_done": false };
             return fetch(`https://playground.4geeks.com/todo/todos/${userName}`, { method: "POST", headers: heading, body: JSON.stringify(taskBody) });
-        } else if (check === 3 && taskID != null) { //Delete Task
+        } else if (check === 3 && taskID !== null) { //Delete Task
             return fetch(`https://playground.4geeks.com/todo/todos/${taskID}`, { method: "DELETE" });
-        } else if (check === 4 && taskID != null && newValue != null) { //Update Task
+        } else if (check === 4 && taskID !== null && newValue !== null) { //Update Task
             return fetch(`https://playground.4geeks.com/todo/todos/${taskID}`, { method: "PUT", headers: heading, body: JSON.stringify(newValue) });
         } else { //if somehow none of the above executes, there's something wrong
             return Promise.reject(new Error(`Encountered logic error or utilized inadequate arguments within accessAPIServer method. Attempted Action: ${actions[check]}`));
@@ -92,10 +92,7 @@ const ToDoList = () => {
             for(let task of tasks){
                 await deleteItem(task.id);
             }
-            
-            
         }
-        
     }
 
     useEffect(() => {
@@ -117,12 +114,12 @@ const ToDoList = () => {
         }
     }
 
-    async function toggleFinished(index, id) {
+    async function toggleFinished(object) {
         let newBody = {
-            "label": tasks[index].label,
-            "is_done": !tasks[index].is_done
+            "label": object.label,
+            "is_done": !object.is_done
         }
-        await accessAPIServer('UpdateTask', id, newBody);
+        await accessAPIServer('UpdateTask', object.id, newBody);
         const updatedTasks = await getTasksFromAPI();
         setTasks(updatedTasks);
     }
@@ -140,7 +137,7 @@ const ToDoList = () => {
             let classes = (object.is_done) ? "list-group-item fs-3 d-flex justify-content-between bg-success" : "list-group-item fs-3 d-flex justify-content-between";
             return <li className={classes}
                 key={index}
-                onClick={() => toggleFinished(index, object.id)}>
+                onClick={() => toggleFinished(object)}>
                 {object.label}
                 <button type="button" className="btn delete-btn text-danger p-0" onClick={() => deleteItem(object.id)}>
                     <i className="bi bi-x-lg p-2 bg-danger-subtle"></i>
@@ -171,44 +168,3 @@ const ToDoList = () => {
 };
 
 export default ToDoList;
-
- // let mappedToDoList = tasks.map((object, index) => {
-    //     let classes = (object.is_done) ? "list-group-item fs-3 d-flex justify-content-between bg-success" : "list-group-item fs-3 d-flex justify-content-between";
-    //     return <li className={classes} 
-    //     key={index} 
-    //     onClick={() => toggleFinished(index,object.id)}>{object.label} <button type="button" className="btn delete-btn text-danger p-0" onClick={() => deleteItem(index)}><i className="bi bi-x-lg p-2 bg-danger-subtle"></i></button></li>
-    // });
-    // (tasks.length === 0) ?
-    //     [<li className="list-group-item fs-3 d-flex justify-content-between" key={0}>There's nothing to do... </li>] :
-
-
-
-
-// let userData = fetch("https://playground.4geeks.com/todo/users/tester")
-//     .then((data) => {
-//         if (!data.ok) {
-//             throw new Error("First Fetch failed, attempting to fetch post.")
-//         }
-//         return data.json()
-//     })
-//     .catch((error) => {
-//         console.log(error.message);
-//         let newData = {
-//             "name": "tester"
-//         }
-//         return fetch("https://playground.4geeks.com/todo/users/tester", {
-//             method: "POST", headers: {
-
-//                 'Content-Type': 'application/json'
-
-//             }, body: JSON.stringify(newData)
-//         })
-//             .then((response) => {
-//                 if (!response.ok) {
-//                     throw new Error("Failed to create a fetch as well. ToDo site will not work properly.")
-//                 }
-//                 return response.json()
-//             })
-//     })
-//     .then((response)=>console.log(response))
-//     .catch((error) => console.log(error.message));
